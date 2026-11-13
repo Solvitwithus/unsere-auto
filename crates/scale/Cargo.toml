@@ -1,0 +1,17 @@
+[package]
+name = "wb-scale"
+version.workspace = true
+edition.workspace = true
+description = "Universal weighbridge indicator engine: transports, protocol profiles, stability, auto-detect, learn mode."
+
+[dependencies]
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+regex.workspace = true
+chrono.workspace = true
+serialport.workspace = true
+tokio = { workspace = true, features = ["sync"] }
+tracing.workspace = true
+clap.workspace = true
+tracing-subscriber.workspace = true

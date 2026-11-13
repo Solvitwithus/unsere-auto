@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weighbridge System Manual</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root { --brand: #0f5c4d; --ink: #1b232c; --muted: #5d6875; --line: #d9dee4; --soft: #f1f5f4; --warn: #9a5b00; --bad: #a3271b; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font: 10.4pt/1.5 "Noto Sans", "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); margin: 0; }
+  h1 { font-size: 21pt; color: var(--brand); margin: 0 0 4mm; padding-bottom: 2mm; border-bottom: 2px solid var(--brand); break-before: page; }
+  h1 .n { color: var(--muted); font-weight: 400; margin-right: 3mm; }
+  h2 { font-size: 13.5pt; margin: 7mm 0 2mm; color: var(--ink); break-after: avoid; }
+  h3 { font-size: 11pt; margin: 5mm 0 1.5mm; break-after: avoid; }
+  p { margin: 0 0 2.6mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  code, .mono { font-family: "Noto Sans Mono", "DejaVu Sans Mono", Consolas, monospace; font-size: 9pt; }
+  code { background: #eef1f3; padding: 0.3mm 1.2mm; border-radius: 1mm; }
+  pre { font: 8.6pt/1.45 "Noto Sans Mono", "DejaVu Sans Mono", Consolas, monospace; background: #1d2731; color: #e8eef2; padding: 3.5mm 4mm; border-radius: 2mm; white-space: pre-wrap; word-break: break-word; break-inside: avoid; margin: 0 0 3.5mm; }
+  pre .c { color: #8fb3a8; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 4mm; font-size: 9.4pt; break-inside: auto; }
+  th, td { border-bottom: 1px solid var(--line); padding: 1.6mm 2mm; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-size: 8.6pt; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  tr { break-inside: avoid; }
+  figure { margin: 2mm 0 5mm; break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid var(--line); border-radius: 2mm; display: block; }
+  figure.half img { width: 72%; margin: 0 auto; }
+  figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.5mm; text-align: center; }
+  .box { border-left: 4px solid var(--brand); background: var(--soft); padding: 3mm 4mm; margin: 0 0 4mm; border-radius: 0 2mm 2mm 0; break-inside: avoid; }
+  .box.warn { border-color: var(--warn); background: #fdf6ea; }
+  .box.bad { border-color: var(--bad); background: #fcefed; }
+  .box b:first-child { display: block; margin-bottom: 1mm; }
+  .steps { counter-reset: s; list-style: none; padding-left: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 10mm; margin-bottom: 2.5mm; break-inside: avoid; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 6.5mm; height: 6.5mm; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 9pt; display: grid; place-items: center; }
+  .kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 1mm; padding: 0 1.4mm; font-size: 9pt; background: #fff; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+
+  /* cover */
+  .cover { height: 255mm; display: flex; flex-direction: column; justify-content: space-between; padding: 6mm 2mm; }
+  .cover .logo { font-size: 52pt; line-height: 1; color: var(--brand); }
+  .cover h1.t { break-before: avoid; border: 0; font-size: 34pt; margin: 6mm 0 2mm; color: var(--ink); }
+  .cover .sub { font-size: 14pt; color: var(--muted); }
+  .cover .band { background: var(--brand); color: #fff; padding: 6mm 7mm; border-radius: 3mm; }
+  .cover .band div { margin: 1mm 0; }
+  .toc { columns: 1; }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc li { margin: 1.4mm 0; }
+  .toc ol { padding-left: 6mm; }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<section class="cover">
+  <div>
+    <div class="logo">⚖</div>
+    <h1 class="t">Weighbridge System</h1>
+    <div class="sub">Installation, setup and user manual</div>
+  </div>
+  <div class="band">
+    <div><b>Covers:</b> central server · weighbridge station PCs · setting up new clients · KRA eTIMS sales · daily use · importing old data · troubleshooting</div>
+    <div><b>Version:</b> 0.1 &nbsp;·&nbsp; <b>Date:</b> November 2026</div>
+  </div>
+</section>
+
+<!-- ============================ CONTENTS ============================ -->
+<h1>Contents</h1>
+<ol class="toc">
+  <li><a href="#overview">Overview: what the system is and how it fits together</a></li>
+  <li><a href="#server">Installing the central server</a></li>
+  <li><a href="#station">Installing a weighbridge station (client PC)</a></li>
+  <li><a href="#client">Setting up a new client</a></li>
+  <li><a href="#etims">KRA eTIMS: sending sales to KRA</a></li>
+  <li><a href="#operator">Daily use: weighbridge operator</a></li>
+  <li><a href="#office">Daily use: office, supervisors and managers</a></li>
+  <li><a href="#import">Moving data from the old system</a></li>
+  <li><a href="#trouble">Troubleshooting</a></li>
+  <li><a href="#ref">Reference: commands, files, protocols</a></li>
+</ol>
+
+<!-- ============================ 1 OVERVIEW ============================ -->
+<h1 id="overview"><span class="n">1</span>Overview</h1>
+<p>The Weighbridge System records every truck that crosses a weighbridge, prints its ticket, and (optionally) turns the weighing into a KRA eTIMS invoice. It replaces the old Java program, which existed in seven slightly different copies, one per client (Joy, Mama, Farisi, Spenza, Uwezo, Jirani and the plain version). Those differences (COM port, how the weight is read, company name) are now <b>settings</b> in a single program.</p>
+
+<h2>The three parts</h2>
+<table>
+  <tr><th style="width:24%">Part</th><th style="width:28%">Where it runs</th><th>What it does</th></tr>
+  <tr><td><b>Central server</b><br><span class="mono">wb-server</span></td><td>One Linux server (cloud or office). Database: PostgreSQL (Neon).</td><td>Holds all clients' data. Hosts the <b>dashboard</b> (web page) for office staff. Sends sales to KRA eTIMS. Pushes settings to stations.</td></tr>
+  <tr><td><b>Station</b><br><span class="mono">wb-station</span></td><td>The PC in the weighbridge office, connected to the indicator by cable.</td><td>Reads the scale, shows the <b>operator screen</b>, saves and prints tickets, and keeps working when the internet is down. Syncs with the server automatically.</td></tr>
+  <tr><td><b>Indicator</b></td><td>The display box next to the weighbridge.</td><td>Sends the weight to the station over a serial (RS-232/RS-485/USB) or network cable.</td></tr>
+</table>
+
+<pre>  INDICATOR ──cable──► STATION PC (wb-station) ──internet──► CENTRAL SERVER (wb-server) ──► eTIMS ──► KRA
+                        local database                        PostgreSQL
+                        operator screen                       dashboard for the office
+                        ticket printer</pre>
+
+<h2>Important ideas</h2>
+<ul>
+  <li><b>Site</b>: one client company or branch (for example "Spenza Limited"). Its name, KRA PIN and ticket footer are printed on tickets.</li>
+  <li><b>Station</b>: one weighbridge PC at a site. It has a short code (for example <code>SPZ1</code>) that starts every ticket number (<code>SPZ1-000123</code>) and its own scale settings.</li>
+  <li><b>Ticket</b>: one truck visit: first weight in, second weight out, <b>net = difference</b>.</li>
+  <li><b>Sale (invoice)</b>: the money side of a ticket, in the same format as your <i>etims-rust</i> system, ready for KRA.</li>
+  <li><b>Offline first</b>: the station saves every ticket on its own disk first. If the internet is down, weighing continues and tickets upload later.</li>
+</ul>
+
+<h2>User roles</h2>
+<table>
+  <tr><th style="width:20%">Role</th><th>Can do</th></tr>
+  <tr><td>Operator</td><td>Sign in at a station, take first/second weights, print tickets, create invoices from tickets.</td></tr>
+  <tr><td>Supervisor</td><td>Everything an operator can, plus: void tickets, type a manual weight (if allowed), station setup (scale, printer), edit customers/products/vehicles, cancel or retry invoices.</td></tr>
+  <tr><td>Viewer</td><td>Dashboard and reports only.</td></tr>
+  <tr><td>Admin</td><td>Everything, including sites, stations and users.</td></tr>
+</table>
+<p class="muted">A user can be tied to one site (they only see that site's data) or to all sites.</p>
+
+<!-- ============================ 2 SERVER ============================ -->
+<h1 id="server"><span class="n">2</span>Installing the central server</h1>
+<p>You do this <b>once</b>. All clients and stations share the same server.</p>
+
+<h2>2.1 What you need</h2>
+<ul>
+  <li>A Linux server (Ubuntu 22.04 or 24.04 recommended), 1 CPU and 1 GB RAM are enough to start, with a domain name pointing at it (for example <code>weighbridge.yourcompany.co.ke</code>).</li>
+  <li>A PostgreSQL database. The system is already set up with a <b>Neon</b> project; any PostgreSQL 14+ also works.</li>
+  <li>The package <code>weighbridge-server-linux.tar.gz</code> (built by the GitHub "release" workflow or by <code>scripts/build-release.sh</code>).</li>
+</ul>
+
+<h2>2.2 Install</h2>
+<pre><span class="c"># 1. a user and folder for the program</span>
+sudo useradd --system --home /opt/weighbridge weighbridge
+sudo mkdir -p /opt/weighbridge
+sudo tar -xzf weighbridge-server-linux.tar.gz -C /opt/weighbridge --strip-components=1
+sudo chown -R weighbridge: /opt/weighbridge
+
+<span class="c"># 2. settings</span>
+cd /opt/weighbridge
+sudo cp .env.example .env
+sudo nano .env            <span class="c"># fill in DATABASE_URL and JWT_SECRET (see below)</span>
+sudo chmod 600 .env</pre>
+
+<h3>The settings file (.env)</h3>
+<table>
+  <tr><th style="width:30%">Setting</th><th>What to put</th></tr>
+  <tr><td><code>DATABASE_URL</code></td><td>The Neon <b>pooled</b> connection string (it contains <code>-pooler</code>). The program creates all tables itself on first start.</td></tr>
+  <tr><td><code>JWT_SECRET</code></td><td>A long random value. Create one with <code>head -c 48 /dev/urandom | base64</code>. Changing it later signs everyone out.</td></tr>
+  <tr><td><code>BIND_ADDR</code></td><td><code>127.0.0.1:8080</code> (nginx in front, below).</td></tr>
+  <tr><td><code>WEB_DIR</code></td><td><code>/opt/weighbridge/web</code></td></tr>
+  <tr><td><code>ETIMS_URL</code>, <code>ETIMS_API_KEY</code></td><td>Optional. See chapter 5. Leave empty to record sales without sending them to KRA.</td></tr>
+</table>
+
+<h2>2.3 Create the first admin and start the service</h2>
+<pre><span class="c"># creates the tables (first run) and an admin login</span>
+sudo -u weighbridge ./wb-server create-admin --username admin --password 'Choose-A-Long-Password'
+
+<span class="c"># run it as a service that starts at boot and restarts if it stops</span>
+sudo cp linux/wb-server.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now wb-server
+sudo systemctl status wb-server          <span class="c"># should say "active (running)"</span>
+curl http://127.0.0.1:8080/api/health     <span class="c"># {"ok":true,...}</span></pre>
+
+<h2>2.4 HTTPS with nginx</h2>
+<pre>sudo apt install nginx certbot python3-certbot-nginx
+sudo cp linux/nginx-weighbridge.conf /etc/nginx/sites-available/weighbridge
+sudo nano /etc/nginx/sites-available/weighbridge      <span class="c"># put your domain name</span>
+sudo ln -s /etc/nginx/sites-available/weighbridge /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d weighbridge.yourcompany.co.ke</pre>
+<p>Open <code>https://weighbridge.yourcompany.co.ke</code> and sign in as <code>admin</code>.</p>
+<figure class="half"><img src="../img/01-login.png"><figcaption>The dashboard sign-in page.</figcaption></figure>
+
+<h2>2.5 Updating, logs and backups</h2>
+<ul>
+  <li><b>Update:</b> stop the service, unpack the new package over <code>/opt/weighbridge</code> (your <code>.env</code> is kept), start it. Database changes are applied automatically at start-up.<br><code>sudo systemctl stop wb-server &amp;&amp; sudo tar -xzf weighbridge-server-linux.tar.gz -C /opt/weighbridge --strip-components=1 &amp;&amp; sudo systemctl start wb-server</code></li>
+  <li><b>Logs:</b> <code>journalctl -u wb-server -f</code></li>
+  <li><b>Backups:</b> Neon keeps point-in-time history (restore from the Neon console). For an extra copy: <code>pg_dump "$DIRECT_URL" -Fc -f weighbridge-$(date +%F).dump</code> (use the URL without <code>-pooler</code>).</li>
+</ul>
+<div class="box warn"><b>Keep secrets secret</b>The <code>.env</code> file contains the database password. Never email it or commit it to git. If it leaks, reset the password in the Neon console and update <code>.env</code>.</div>
+
+<!-- ============================ 3 STATION ============================ -->
+<h1 id="station"><span class="n">3</span>Installing a weighbridge station</h1>
+<p>Do this on each weighbridge PC. It takes about 15 minutes.</p>
+
+<h2>3.1 What you need</h2>
+<ul>
+  <li>A Windows 10/11 PC (or Linux) with Microsoft Edge or Chrome.</li>
+  <li>The cable from the indicator. Most PCs have no COM port: use a <b>USB-to-RS232 adapter with an FTDI chip</b> (cheap and reliable; install its driver). Note the COM number Windows gives it in <i>Device Manager &gt; Ports (COM &amp; LPT)</i>.</li>
+  <li>The indicator's serial output switched <b>on</b> in <b>continuous</b> mode (see the indicator's manual; on Yaohua XK3190 indicators this is the <code>tF</code> setting). The old program already needed this, so existing sites are usually set up.</li>
+  <li>The package <code>weighbridge-station-windows.zip</code>.</li>
+  <li>From the dashboard: the <b>station key</b> for this PC (chapter 4).</li>
+</ul>
+<div class="box"><b>Cable tip</b>An RS-232 link needs only three wires: the indicator's TX to the PC's RX (pin 2 on the PC's 9-pin plug), and ground to ground (pin 5). If you get no data at all, try swapping the TX and RX wires (a "null-modem" cable).</div>
+
+<h2>3.2 Install on Windows</h2>
+<ol class="steps">
+  <li>Unzip <code>weighbridge-station-windows.zip</code> to a folder, for example the Desktop.</li>
+  <li>Right-click <b>Start</b> &gt; <b>Terminal (Admin)</b> or <b>Windows PowerShell (Admin)</b>, go to the folder and run:<pre>Set-ExecutionPolicy -Scope Process Bypass
+.\install-station.ps1</pre></li>
+  <li>The script copies the program to <code>C:\Weighbridge</code>, sets it to start automatically with Windows (and restart if it ever stops), puts a <b>Weighbridge</b> icon on the desktop, and opens the setup screen.</li>
+</ol>
+<p class="muted">Linux PCs: unpack <code>weighbridge-station-linux.tar.gz</code> to <code>/opt/weighbridge-station</code>, add the user to the <code>dialout</code> group (serial port access) and install <code>wb-station.service</code> the same way as the server service.</p>
+
+<h2>3.3 Connect the station to the server</h2>
+<p>The first time the screen opens it asks for the server address and the station key:</p>
+<figure class="half"><img src="../img/24-enrol.png"><figcaption>First start: enter the server address and the station key from the dashboard.</figcaption></figure>
+<ol class="steps">
+  <li><b>Server address</b>: for example <code>https://weighbridge.yourcompany.co.ke</code></li>
+  <li><b>Station key</b>: the long <code>wbk_...</code> key shown once when the station was added in the dashboard.</li>
+  <li>Press <b>Connect</b>. The station downloads its site name, users, customers, products, vehicles and scale settings. You can now sign in with any user of that site.</li>
+</ol>
+
+<h2>3.4 Set up the scale</h2>
+<p>If the station was created from a client preset, the scale settings are already there. Otherwise, or to check them, sign in as a supervisor and press <b>Setup</b>.</p>
+<figure><img src="../img/22-setup.png"><figcaption>Station setup: Auto-detect, manual settings, Learn mode, printer.</figcaption></figure>
+<ol class="steps">
+  <li>Put any load on the deck (or leave it empty) and press <b>Auto-detect</b>. The station listens on every port at every common speed for up to a minute and lists what it understood.</li>
+  <li>Pick the line whose <b>weights match the indicator display</b> and press <b>Use this</b>. Done.</li>
+  <li>If nothing is found: check the cable and the indicator's output setting. Then set the port and baud rate by hand, press <b>Save</b>, and use <b>Show raw data</b> to see whether anything arrives.</li>
+  <li><b>Unknown indicator?</b> Use <b>Learn</b>: with a steady weight on the deck, type exactly the number on the display and press Learn. The station works out where that number sits in the data and saves a custom protocol.</li>
+</ol>
+<figure><img src="../img/23-setup-raw.png"><figcaption>"Show raw data" shows exactly what the indicator sends, which helps when checking a cable or protocol.</figcaption></figure>
+
+<h3>Scale settings explained</h3>
+<table>
+  <tr><th style="width:30%">Setting</th><th>Meaning</th></tr>
+  <tr><td>Connection</td><td>Serial cable (COM port), or network for indicators with Ethernet / serial-to-network converters (IP and port).</td></tr>
+  <tr><td>Baud rate, data bits / parity / stop bits</td><td>Must match the indicator. The old program used <b>2400, 8N1</b> at every site. Toledo output is often 9600 7E1.</td></tr>
+  <tr><td>Indicator protocol</td><td>How to read the weight from the data (see chapter 10). Auto-detect chooses it.</td></tr>
+  <tr><td>Stable when steady for / within</td><td>A weight counts as <b>stable</b> only after it stayed within this many kg for this long (default 1.5 s, 20 kg), and the indicator does not report motion. Weights can only be captured when stable.</td></tr>
+  <tr><td>Empty deck below</td><td>Readings below this (default 50 kg) are treated as "no truck".</td></tr>
+  <tr><td>Scale capacity</td><td>Readings above this are refused.</td></tr>
+  <tr><td>Allow manual weights</td><td>Lets a supervisor type a weight when the scale is broken. The ticket is marked "manual" and reported on the dashboard.</td></tr>
+</table>
+
+<h2>3.5 Printer</h2>
+<table>
+  <tr><th style="width:32%">Printer type</th><th>When to use</th></tr>
+  <tr><td>Any printer (print dialog)</td><td>Default. Works with any printer installed in Windows. A print window opens; press Enter.</td></tr>
+  <tr><td>Network receipt printer</td><td>Thermal receipt printers on the network (ESC/POS, usually port 9100). Prints instantly with no dialog, and cuts the paper.</td></tr>
+  <tr><td>Serial / USB receipt printer</td><td>Receipt printers on a COM port.</td></tr>
+  <tr><td>Print command</td><td>Linux: for example <code>lp -d TM-T20</code>.</td></tr>
+</table>
+<p>Tick <b>Print automatically</b> to print every ticket as soon as it is complete.</p>
+
+<h2>3.6 Test before handing over</h2>
+<ol class="steps">
+  <li>With a truck (or a known test weight) on the deck, the big display shows the weight and turns <b>green: STABLE</b>.</li>
+  <li>Make a test ticket: first weight, then second weight, and print it.</li>
+  <li>In the dashboard, check that the ticket appears under <b>Tickets</b> and that the station shows <b>online</b>.</li>
+  <li>Void the test ticket (supervisor) with the reason "installation test".</li>
+</ol>
+
+<!-- ============================ 4 NEW CLIENT ============================ -->
+<h1 id="client"><span class="n">4</span>Setting up a new client</h1>
+<p>A new client needs <b>no programming</b>: you add a site, a station, the client's products and customers, and users. In the dashboard open <b>Sites, stations, users</b>.</p>
+
+<h2>4.1 Add the site</h2>
+<figure><img src="../img/10-sites.png"><figcaption>Sites: one per client company or branch.</figcaption></figure>
+<table>
+  <tr><th style="width:30%">Field</th><th>Meaning</th></tr>
+  <tr><td>Code</td><td>Short and unique, for example <code>SPENZA</code>. It starts invoice numbers (<code>INV-SPENZA-000001</code>).</td></tr>
+  <tr><td>Company / site name</td><td>Printed at the top of tickets. Automatically used as <b>From</b> on sales and <b>To</b> on purchases, as the old program did.</td></tr>
+  <tr><td>KRA PIN, phone, address, footer</td><td>Printed on tickets and receipts.</td></tr>
+  <tr><td>Prices include VAT</td><td>Whether product prices already contain VAT (usual for retail prices).</td></tr>
+  <tr><td>Invoice sale tickets automatically</td><td>If on: every completed <i>sale</i> ticket with a priced product becomes an invoice (and is sent to eTIMS) with no button press.</td></tr>
+</table>
+
+<h2>4.2 Add the station and get its key</h2>
+<figure><img src="../img/12-station-edit.png"><figcaption>A station: its site, code, name and scale settings.</figcaption></figure>
+<ol class="steps">
+  <li>Open the <b>Stations</b> tab, press <b>+ Add</b>, choose the site, give a code (for example <code>SPZ1</code>; it starts ticket numbers and can't be changed later) and a name.</li>
+  <li>Set the scale settings if you know them (port, 2400 baud, protocol), or leave the defaults and use Auto-detect at the PC.</li>
+  <li>Save. A window shows the <b>station key</b>, <b>only once</b>. Copy it and enter it at the station (chapter 3.3). If it is lost, press <b>New key</b> and enter the new one at the station.</li>
+</ol>
+<p>Later changes to the scale settings here are sent to the station automatically within about 10 seconds.</p>
+<figure><img src="../img/11-stations.png"><figcaption>The station list shows whether each station is online, its live scale reading and how many tickets it took in the last 24 hours.</figcaption></figure>
+
+<h2>4.3 The existing clients: presets</h2>
+<p>For the seven old program copies there are ready-made settings in the <code>presets</code> folder. On the server:</p>
+<pre>cd /opt/weighbridge
+sudo -u weighbridge ./wb-server apply-preset presets/spenza.json
+<span class="c"># prints the station key: enter it at the Spenza weighbridge PC</span></pre>
+<table>
+  <tr><th>Preset</th><th>Replaces</th><th>Port</th><th>Protocol</th></tr>
+  <tr><td>joy.json</td><td>weighBridgeJoy.java</td><td>COM4, 2400</td><td>generic-number</td></tr>
+  <tr><td>mama.json</td><td>weighBridgeMama.java</td><td>COM4, 2400</td><td>generic-number</td></tr>
+  <tr><td>farisi.json</td><td>weighBridgeFarisi.java</td><td>COM4, 2400</td><td>sign6 (<code>+000140</code>)</td></tr>
+  <tr><td>spenza.json</td><td>weighBridgeSpenza.java</td><td>COM4, 2400</td><td>generic-number</td></tr>
+  <tr><td>uwezo.json</td><td>weighBridgeUwezo.java</td><td>COM4, 2400</td><td>generic-number</td></tr>
+  <tr><td>jirani.json</td><td>weighBridgeJirani.java</td><td>COM4, 2400</td><td>generic-number</td></tr>
+  <tr><td>spenza-com3.json</td><td>weighBridge.java</td><td>COM3, 2400</td><td>generic-number</td></tr>
+</table>
+<div class="box"><b>Edit before applying</b>Open the preset and fill in the real company name, KRA PIN, phone and address. On site, run Auto-detect once to confirm the protocol. A more specific protocol (for example Toledo) also detects motion, which is safer than generic-number.</div>
+
+<h2>4.4 Products, customers and vehicles</h2>
+<p>Under <b>Customers &amp; items</b>:</p>
+<figure><img src="../img/08-products.png"><figcaption>Products carry their price and their eTIMS fields.</figcaption></figure>
+<table>
+  <tr><th style="width:30%">Product field</th><th>Meaning</th></tr>
+  <tr><td>Price, Sold per</td><td>Price per <b>TNE</b> (tonne: invoiced quantity = net kg ÷ 1000), per <b>KG</b>, or per <b>U</b> (each/service).</td></tr>
+  <tr><td>Tax</td><td>KRA tax type: B = 16% VAT, E = 8%, A = exempt, C = zero-rated, D = non-VAT.</td></tr>
+  <tr><td>eTIMS item code</td><td>If the item is registered in eTIMS, its code. Otherwise leave empty and fill the classification.</td></tr>
+  <tr><td>KRA classification</td><td>The KRA item classification code (needed when there is no eTIMS item code).</td></tr>
+  <tr><td>Code <code>FEE</code></td><td>Create a product with code <b>FEE</b> (for example "Weighbridge fee", unit U) so that weighing charges are invoiced with the right tax settings.</td></tr>
+</table>
+<p><b>Customers &amp; suppliers</b> need a name; add the <b>KRA PIN</b> for customers who need it on their tax invoices. <b>Vehicles</b> are created automatically the first time a plate is weighed, and their empty weight (tare) is remembered after every completed weighing.</p>
+<figure><img src="../img/09-product-edit.png"><figcaption>Editing a product.</figcaption></figure>
+
+<h2>4.5 Users</h2>
+<figure><img src="../img/13-users.png"><figcaption>Users, with their role and site.</figcaption></figure>
+<p>Add an account for each operator (role <b>Operator</b>, site = their site) and at least one <b>Supervisor</b> per site. Passwords need at least 8 characters. Users reach their stations within about 10 seconds and can then sign in there, even if the internet goes down later. Turning off <b>Active</b> blocks the user everywhere.</p>
+
+<!-- ============================ 5 ETIMS ============================ -->
+<h1 id="etims"><span class="n">5</span>KRA eTIMS: sending sales to KRA</h1>
+<p>Sales are stored in exactly the format of your <b>etims-rust</b> server (<code>POST /invoices</code>): buyer, sale, item lines with tax type, and the KRA amounts per line (<code>prc</code>, <code>splyAmt</code>, <code>dcAmt</code>, <code>taxblAmt</code>, <code>taxAmt</code>, <code>totAmt</code>), calculated with the same VAT rules to the cent.</p>
+
+<h2>5.1 Switch it on</h2>
+<ol class="steps">
+  <li>In the etims-rust dashboard, create an <b>API key</b> for the client's company (and note the control unit if it has more than one).</li>
+  <li>On the weighbridge server, edit <code>/opt/weighbridge/.env</code>:<pre>ETIMS_URL=https://your-etims-server/api/v1
+ETIMS_API_KEY=the-api-key
+ETIMS_CONTROL_UNIT_ID=            <span class="c"># only if needed</span></pre></li>
+  <li><code>sudo systemctl restart wb-server</code>. From now on every new normal sale is sent automatically.</li>
+</ol>
+<div class="box warn"><b>One eTIMS company per server</b>The settings above send all sales to one eTIMS company. If several clients with different KRA PINs share this server, run one weighbridge server per client company (same program, separate <code>.env</code> and database), or ask for per-site eTIMS keys to be added.</div>
+
+<h2>5.2 How a sale is made</h2>
+<ul>
+  <li><b>From a ticket:</b> in <b>Tickets</b>, open a completed ticket, choose the payment type and press <b>Create invoice</b>. The product line is the net weight in the product's unit (24,420 kg = 24.42 TNE) times its price. Weighing charges become a second line.</li>
+  <li><b>Automatically:</b> turn on "Invoice sale tickets automatically" for the site.</li>
+  <li><b>By hand:</b> in <b>Sales (eTIMS)</b> press <b>+ New sale</b> for anything not weighed.</li>
+</ul>
+<figure><img src="../img/06-sale-detail.png"><figcaption>An invoice with the KRA amounts per line and its eTIMS status. "Show eTIMS request" shows the exact data sent.</figcaption></figure>
+
+<h2>5.3 eTIMS status</h2>
+<table>
+  <tr><th style="width:18%">Status</th><th>Meaning and what to do</th></tr>
+  <tr><td>DISABLED</td><td>eTIMS not configured, or a cancelled/proforma sale. Not sent.</td></tr>
+  <tr><td>PENDING</td><td>Waiting to be sent (normally seconds).</td></tr>
+  <tr><td>SUBMITTED</td><td>eTIMS accepted it and is waiting for KRA's signature. Checked again automatically.</td></tr>
+  <tr><td>SIGNED</td><td>Done. The CU invoice number, signature and KRA verification link are stored and printed on the receipt.</td></tr>
+  <tr><td>FAILED</td><td>Hover over or open it to see the reason. Network problems retry by themselves (30 s, 1 min, 2 min ... up to 30 min). Data problems (for example a product without classification) need fixing; then press <b>Send to eTIMS now</b>.</td></tr>
+</table>
+<div class="box bad"><b>Signed invoices can't be cancelled here</b>Once KRA has signed an invoice, it can only be reversed with a <b>credit note</b> in eTIMS. The system blocks voiding a ticket or cancelling a sale that has a signed invoice.</div>
+
+<!-- ============================ 6 OPERATOR ============================ -->
+<h1 id="operator"><span class="n">6</span>Daily use: weighbridge operator</h1>
+<p>Double-click the <b>Weighbridge</b> icon on the desktop and sign in with your username and password.</p>
+<figure><img src="../img/21-operator.png"><figcaption>The operator screen: live weight at the top, new weighing on the left, trucks waiting for their second weight on the right.</figcaption></figure>
+
+<h2>6.1 The weight display</h2>
+<table>
+  <tr><th style="width:22%">Colour / word</th><th>Meaning</th></tr>
+  <tr><td><b style="color:#0f7a45">Green: STABLE</b></td><td>The truck is still and the weight is steady. Weights can be captured.</td></tr>
+  <tr><td><b style="color:#a86200">Orange: MOVING</b></td><td>The weight is changing. Wait for the driver to stop and switch off.</td></tr>
+  <tr><td><b style="color:#59636e">Grey: NO SIGNAL / NO SCALE</b></td><td>No data from the indicator. Check that it is on and the cable is in (chapter 9).</td></tr>
+</table>
+<p>The badges at the top show whether the station is <b>online</b> and how many tickets are waiting to upload. Weighing works the same when offline.</p>
+
+<h2>6.2 First weight (truck arrives)</h2>
+<ol class="steps">
+  <li>Choose the type: <b>Purchase (in)</b>, <b>Sale (out)</b>, <b>Transfer</b> or <b>Other</b>.</li>
+  <li>Type the <b>number plate</b> (known plates are suggested; spaces don't matter: "KCX 123A" = "KCX123A"). The usual driver and owner fill in by themselves.</li>
+  <li>Choose the <b>customer</b> (for sales) or <b>supplier</b> (for purchases), or type a name, and the <b>product</b>. Add a reference/order number, charges or a memo if needed.</li>
+  <li>When the display is green, press <b>Capture FIRST weight</b>. The truck now appears under <i>Waiting for second weight</i>.</li>
+</ol>
+<p class="muted">A truck can't be weighed in twice: if it already has an open ticket, the screen says so.</p>
+
+<h2>6.3 Second weight (truck leaves)</h2>
+<ol class="steps">
+  <li>When the truck is back on the deck and the display is green, find it under <b>Waiting for second weight</b>.</li>
+  <li>Press <b>SECOND weight</b>. The ticket is complete: <b>gross</b> (heavier), <b>tare</b> (lighter) and <b>net</b> (difference) are calculated and the ticket prints.</li>
+</ol>
+
+<h2>6.4 Single weighing with the stored empty weight</h2>
+<p>Every completed ticket remembers the truck's empty weight. Next time, after typing the plate you'll see "Stored empty weight". Tick <b>Single weighing</b> and press <b>Capture weight &amp; finish</b>: the ticket completes with one pass over the bridge.</p>
+
+<h2>6.5 Printing and reprinting</h2>
+<p>Tickets print when completed (or press <b>Print</b> under <i>Recent tickets</i>). Reprints are marked <b>REPRINT</b>.</p>
+<pre>             DEMO QUARRY LTD
+          Mlolongo, Mombasa Rd
+            WEIGHBRIDGE TICKET
+------------------------------------------
+Ticket No:                     DEM1-000001
+Type:                                 SALE
+Vehicle:                           KCX123A
+Customer:                Acme Builders Ltd
+Product:                       Ballast 3/4"
+------------------------------------------
+1st 13/11/2026 17:51             14,260 kg
+2nd 13/11/2026 17:58             38,680 kg
+------------------------------------------
+GROSS:                           38,680 kg
+TARE:                            14,260 kg
+NET:                             24,420 kg</pre>
+
+<h2>6.6 When the scale is broken (supervisors)</h2>
+<p>If the station allows manual weights, a supervisor sees a <b>Manual weight</b> box (first weight) and a ✎ button (second weight). Manual weights are marked on the ticket and counted on the dashboard. Use them only when the indicator really can't be read.</p>
+
+<h2>6.7 Mistakes</h2>
+<p>Ask a supervisor to <b>void</b> a wrong ticket (dashboard <b>Tickets</b> &gt; open it &gt; <b>Void</b>, with a reason) and weigh again. Voided tickets stay visible for audit.</p>
+
+<!-- ============================ 7 OFFICE ============================ -->
+<h1 id="office"><span class="n">7</span>Daily use: office</h1>
+
+<h2>7.1 Dashboard</h2>
+<figure><img src="../img/02-dashboard.png"><figcaption>The dashboard: ticket totals, net tonnes, invoiced amount, KRA-signed invoices, tonnage per day, station status, and top products and customers.</figcaption></figure>
+<p>Choose the date range at the top right. The <b>Stations</b> box shows each weighbridge as online or offline, its live scale reading, and any tickets waiting to upload. A note appears if any tickets in the period used typed (manual) weights.</p>
+
+<h2>7.2 Tickets</h2>
+<figure><img src="../img/03-tickets.png"><figcaption>All tickets from all stations, with filters and CSV export.</figcaption></figure>
+<ul>
+  <li>Filter by date, status (open, complete, void) and type, or search by ticket number, plate, customer, product or driver.</li>
+  <li><b>Export CSV</b> downloads the filtered list for Excel.</li>
+  <li>Click a ticket to see every detail, including the <b>raw indicator data</b> recorded when it was weighed (proof in a dispute), print a copy, create its invoice, or void it.</li>
+</ul>
+<figure><img src="../img/04-ticket-detail.png"><figcaption>Ticket details, with Create invoice and Void.</figcaption></figure>
+
+<h2>7.3 Sales</h2>
+<figure><img src="../img/05-sales.png"><figcaption>Sales (eTIMS): invoices with buyer, PIN, VAT, total and eTIMS status.</figcaption></figure>
+<figure><img src="../img/07-new-sale.png"><figcaption>A sale entered by hand.</figcaption></figure>
+
+<h2>7.4 Audit log</h2>
+<p>Admins and supervisors can see who did what (sign-ins, voids, price changes, new users and so on) under <b>Sites, stations, users &gt; Audit log</b>.</p>
+
+<!-- ============================ 8 IMPORT ============================ -->
+<h1 id="import"><span class="n">8</span>Moving data from the old system</h1>
+<p>The old program kept weighing records on the client's online ERP (<code>*.digerp.com</code>, MySQL) and other records in its PostgreSQL database (<code>sako</code>). Export them as <b>CSV</b> files (with a header row), copy them to the server, and import them in this order: customers, products, vehicles, then tickets.</p>
+<pre>cd /opt/weighbridge
+<span class="c"># check first: --dry-run reads and validates, writes nothing</span>
+./wb-server import parties  customers.csv --dry-run
+./wb-server import parties  customers.csv
+./wb-server import products items.csv
+./wb-server import vehicles vehicles.csv
+./wb-server import tickets  weighdata.csv --site SPENZA</pre>
+<p>Running an import again is safe: rows already imported are skipped. The importer recognises the old column names:</p>
+<table>
+  <tr><th style="width:16%">File</th><th>Recognised columns (any of)</th></tr>
+  <tr><td>tickets</td><td><code>trans_no</code>/<code>receipt_no</code>, <code>trans_type</code> (Purchases/Sales/Others), <code>vehicle</code>, <code>driver</code>, <code>source_name</code>, <code>dest_name</code>, <code>product</code>/<code>item</code>, <code>first_weight</code>, <code>second_weight</code>, <code>charges</code>, <code>memo</code>, <code>date</code>/<code>trans_date</code>, <code>second_weight_date</code>, <code>operator</code>, <code>trans_id</code>/<code>reference</code></td></tr>
+  <tr><td>parties</td><td><code>name</code>/<code>supplier_name</code>/<code>client_name</code>, <code>code</code>, <code>type</code>, <code>pin</code>/<code>kra_pin</code>, <code>phone</code>, <code>email</code>, <code>address</code></td></tr>
+  <tr><td>products</td><td><code>name</code>/<code>item_name</code>, <code>code</code>/<code>item_code</code>, <code>price</code>/<code>unit_price</code>, <code>unit</code>, <code>classification</code>, <code>tax_type</code></td></tr>
+  <tr><td>vehicles</td><td><code>plate</code>/<code>vehicle_no</code>/<code>reg_no</code>, <code>tare</code>, <code>driver</code></td></tr>
+</table>
+<p>Old tickets get numbers starting <code>OLD-</code> (for example <code>OLD-4512</code>), keep their original number for reference, and dates are read as Kenyan time. Example export from MySQL:</p>
+<pre>mysql -h HOST -u USER -p DB -e "SELECT * FROM weighdata" -B | tr '\t' ',' &gt; weighdata.csv</pre>
+
+<!-- ============================ 9 TROUBLESHOOTING ============================ -->
+<h1 id="trouble"><span class="n">9</span>Troubleshooting</h1>
+<table>
+  <tr><th style="width:30%">Problem</th><th>What to check</th></tr>
+  <tr><td>Display grey, "NO SCALE", error "cannot open COM4"</td><td>Wrong port or the port is in use. Close the old Java program if it is still running (only one program can use a COM port). Check Device Manager for the right COM number, then fix it in Setup.</td></tr>
+  <tr><td>"NO SIGNAL" (port opens, no weight)</td><td>Indicator off, cable loose, TX/RX swapped, output not in continuous mode, or wrong baud rate. Use <b>Setup &gt; Show raw data</b>: nothing at all = cable/indicator; garbage characters = wrong baud rate; readable text = run Auto-detect or Learn.</td></tr>
+  <tr><td>Weight shown but wrong (for example reversed or ×10)</td><td>Wrong protocol. Run Auto-detect and pick the line matching the display, or use Learn.</td></tr>
+  <tr><td>Always "MOVING", never stable</td><td>Truck still moving, wind, or a noisy indicator. Raise "within (kg)" to the scale's division (often 20 kg) in the scale settings.</td></tr>
+  <tr><td>Station shows "offline"</td><td>Internet down: weighing continues and tickets upload later. If it lasts, check the server address in Setup and that the server is running (<code>systemctl status wb-server</code>).</td></tr>
+  <tr><td>"server refused pull: HTTP 401"</td><td>Wrong or replaced station key, or the station was deactivated. Enter the current key in Setup &gt; Server connection.</td></tr>
+  <tr><td>Can't sign in at a new station</td><td>The user must belong to that site (or to all sites) and be active. Wait about 10 seconds after creating them (the station syncs every 10 seconds).</td></tr>
+  <tr><td>Invoice FAILED in eTIMS</td><td>Open it and read the error. Usually a product without KRA classification, an invalid buyer PIN, or eTIMS unreachable. Fix it and press <b>Send to eTIMS now</b>.</td></tr>
+  <tr><td>Printer prints nothing</td><td>For a network printer, check its IP (print its self-test page). Otherwise switch to "Any printer" to use Windows printing.</td></tr>
+  <tr><td>Station program not running</td><td>Restart the PC, or in PowerShell (Admin): <code>Start-ScheduledTask WeighbridgeStation</code>. Logs: run <code>C:\Weighbridge\wb-station.exe --data-dir C:\Weighbridge\data --web-dir C:\Weighbridge\web</code> in a window to see messages.</td></tr>
+</table>
+
+<h2>Diagnostic tool: wb-scale</h2>
+<p>Installed next to the station. Close the station first (it needs the port).</p>
+<pre>wb-scale ports                                   <span class="c"># list serial ports</span>
+wb-scale detect                                  <span class="c"># auto-detect on every port</span>
+wb-scale monitor --serial COM4 --baud 2400 --profile toledo   <span class="c"># live readings</span>
+wb-scale learn --serial COM4 --baud 2400 --weight 12340       <span class="c"># build a profile</span>
+wb-scale profiles                                <span class="c"># list protocols</span></pre>
+
+<!-- ============================ 10 REFERENCE ============================ -->
+<h1 id="ref"><span class="n">10</span>Reference</h1>
+
+<h2>Indicator protocols</h2>
+<table>
+  <tr><th style="width:20%">Protocol</th><th>Looks like</th><th>Used by</th></tr>
+  <tr><td>toledo</td><td>binary status bytes + 6-digit weight</td><td>Mettler Toledo, Keli, most Chinese indicators ("tF=1"/"Toledo" output). Reports motion.</td></tr>
+  <tr><td>st-gs</td><td><code>ST,GS,+0012340kg</code></td><td>A&amp;D, CAS and many OEM indicators. ST = stable, US = moving.</td></tr>
+  <tr><td>yaohua-reversed</td><td><code>=0432100</code> (digits backwards)</td><td>Yaohua XK3190 with "tF=0".</td></tr>
+  <tr><td>weight-unit</td><td><code>12340 kg G</code></td><td>Rinstrum, Avery, Cardinal. "M" = motion.</td></tr>
+  <tr><td>sign6</td><td><code>+000140</code></td><td>Budget indicators (the Farisi site).</td></tr>
+  <tr><td>generic-number</td><td>any text with a number</td><td>Fallback, equivalent to the old program's "keep the digits" rule. No motion flag.</td></tr>
+  <tr><td>learned</td><td>anything</td><td>Built by Learn mode from the displayed weight.</td></tr>
+</table>
+
+<h2>Files and ports</h2>
+<table>
+  <tr><th style="width:38%">Item</th><th>Location</th></tr>
+  <tr><td>Server program and settings</td><td><code>/opt/weighbridge/wb-server</code>, <code>/opt/weighbridge/.env</code></td></tr>
+  <tr><td>Server address (local)</td><td><code>127.0.0.1:8080</code> behind nginx (HTTPS 443)</td></tr>
+  <tr><td>Station program (Windows)</td><td><code>C:\Weighbridge\wb-station.exe</code></td></tr>
+  <tr><td>Station database and settings</td><td><code>C:\Weighbridge\data\station.db</code>, <code>station.json</code>. Back this folder up; it holds tickets not yet uploaded.</td></tr>
+  <tr><td>Station screen</td><td><code>http://127.0.0.1:7878</code> (this PC only)</td></tr>
+  <tr><td>Startup task</td><td>Task Scheduler &gt; <code>WeighbridgeStation</code></td></tr>
+</table>
+
+<h2>Server commands</h2>
+<table>
+  <tr><th style="width:44%">Command</th><th>Does</th></tr>
+  <tr><td><code>wb-server</code> or <code>wb-server serve</code></td><td>Run the API and dashboard (applies database updates first).</td></tr>
+  <tr><td><code>wb-server create-admin --username U --password P</code></td><td>Create an admin, or reset an admin's password.</td></tr>
+  <tr><td><code>wb-server apply-preset presets/x.json</code></td><td>Create or update a site and station from a preset; prints the station key.</td></tr>
+  <tr><td><code>wb-server import KIND file.csv [--site CODE] [--dry-run]</code></td><td>Import old data (parties, products, vehicles, tickets).</td></tr>
+</table>
+
+<h2>Testing without a weighbridge</h2>
+<p>The simulator <code>wb-sim</code> pretends to be an indicator, with trucks driving on, settling and leaving:</p>
+<pre>wb-sim --format toledo --tcp 127.0.0.1:4001          <span class="c"># network indicator</span>
+wb-sim --format st-gs --hold 23460 --tcp 127.0.0.1:4001  <span class="c"># fixed weight</span></pre>
+<p>Point a test station at network <code>127.0.0.1:4001</code> to train operators or test changes.</p>
+
+</body>
+</html>

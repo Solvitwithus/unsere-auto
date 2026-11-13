@@ -1,0 +1,58 @@
+# Builds installable packages on every tag (v1.0.0, ...) or by hand (Actions > Run workflow):
+#   weighbridge-server-linux.tar.gz   wb-server + web UI + deploy files
+#   weighbridge-station-windows.zip   wb-station.exe + wb-scale.exe + web UI + installer script
+#   weighbridge-station-linux.tar.gz  same for Linux station PCs
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd web && pnpm install --frozen-lockfile && pnpm build
+      - uses: actions/upload-artifact@v4
+        with: { name: web, path: web/out }
+
+  linux:
+    needs: web
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/download-artifact@v4
+        with: { name: web, path: web/out }
+      - run: cargo test --workspace && cargo build --release -p wb-server -p wb-station -p wb-scale
+      - run: |
+          mkdir -p dist/server dist/station
+          cp target/release/wb-server dist/server/ && cp -r web/out dist/server/web && cp -r deploy/linux presets .env.example dist/server/
+          cp target/release/wb-station target/release/wb-scale dist/station/ && cp -r web/out dist/station/web && cp deploy/linux/wb-station.service dist/station/
+          tar -C dist -czf weighbridge-server-linux.tar.gz server
+          tar -C dist -czf weighbridge-station-linux.tar.gz station
+      - uses: actions/upload-artifact@v4
+        with: { name: linux, path: "*.tar.gz" }
+
+  windows:
+    needs: web
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/download-artifact@v4
+        with: { name: web, path: web/out }
+      - run: cargo build --release -p wb-station -p wb-scale
+      - shell: pwsh
+        run: |
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item target/release/wb-station.exe, target/release/wb-scale.exe, deploy/windows/*.ps1 dist/
+          Copy-Item web/out dist/web -Recurse
+          Compress-Archive dist/* weighbridge-station-windows.zip
+      - uses: actions/upload-artifact@v4
+        with: { name: windows, path: weighbridge-station-windows.zip }

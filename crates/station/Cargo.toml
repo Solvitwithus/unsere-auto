@@ -1,0 +1,24 @@
+[package]
+name = "wb-station"
+version.workspace = true
+edition.workspace = true
+description = "Weighbridge station: scale engine, offline-first local DB, operator UI host, printing, sync."
+
+[dependencies]
+wb-core = { path = "../core" }
+wb-scale = { path = "../scale" }
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+clap.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+sqlx = { workspace = true, features = ["sqlite"] }
+reqwest.workspace = true
+rand.workspace = true
+hex.workspace = true

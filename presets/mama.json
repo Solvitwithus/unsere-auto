@@ -1,0 +1,34 @@
+{
+  "_about": "Replaces weighBridgeMama.java. Old parser stripped a 'W   ' prefix then kept digits. Run `wb-scale detect` on site to confirm the protocol, then adjust here or in the dashboard.",
+  "site": {
+    "code": "MAMA",
+    "name": "Mama",
+    "address": "",
+    "phone": "",
+    "kra_pin": "",
+    "ticket_footer": "Thank you",
+    "auto_invoice": false,
+    "prices_include_tax": true,
+    "weighing_fee": 0
+  },
+  "station": {
+    "code": "MAMA1",
+    "name": "Mama weighbridge (COM4)",
+    "scale_config": {
+      "transport": {
+        "kind": "serial",
+        "port": "COM4",
+        "baud": 2400,
+        "framing": "8N1"
+      },
+      "profile_id": "generic-number",
+      "stability": {
+        "window_ms": 1500,
+        "tolerance_kg": 20,
+        "min_samples": 3
+      },
+      "allow_manual": false,
+      "max_capacity_kg": 100000
+    }
+  }
+}

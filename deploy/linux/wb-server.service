@@ -1,0 +1,22 @@
+# systemd unit for the central server.
+#   sudo cp wb-server.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now wb-server
+#   journalctl -u wb-server -f        # logs
+[Unit]
+Description=Weighbridge central server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=weighbridge
+WorkingDirectory=/opt/weighbridge
+EnvironmentFile=/opt/weighbridge/.env
+ExecStart=/opt/weighbridge/wb-server serve
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

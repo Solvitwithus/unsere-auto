@@ -1,0 +1,9 @@
+/target
+.env
+*.db
+*.db-*
+/station-data
+node_modules
+/web/.next
+/web/out
+/dist

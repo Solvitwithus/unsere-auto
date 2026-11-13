@@ -1,0 +1,15 @@
+# systemd unit for a station on a Linux PC (Windows: see deploy/windows).
+# The user needs access to the serial port:  sudo usermod -aG dialout weighbridge
+[Unit]
+Description=Weighbridge station
+After=network.target
+
+[Service]
+User=weighbridge
+WorkingDirectory=/opt/weighbridge-station
+ExecStart=/opt/weighbridge-station/wb-station --data-dir /opt/weighbridge-station/data --web-dir /opt/weighbridge-station/web
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

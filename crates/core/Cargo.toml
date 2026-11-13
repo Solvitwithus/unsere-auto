@@ -1,0 +1,13 @@
+[package]
+name = "wb-core"
+version.workspace = true
+edition.workspace = true
+description = "Types shared by the station and the central server."
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+sqlx = { workspace = true }
+argon2.workspace = true
